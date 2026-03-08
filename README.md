@@ -52,11 +52,32 @@ A complete template kit for deploying a multi-agent team on **OpenClaw + Telegra
 
 ### Key Concepts
 
-- **One bot per agent** — Each agent has its own Telegram bot token
+- **Two Telegram routing models** — choose between multi-bot routing and native topic `agentId` routing
+- **Multi-bot routing** — Each agent has its own Telegram bot token and visible identity
+- **Native topic routing** — One Telegram bot can route different topics to different internal agents via `topics.<id>.agentId`
 - **One topic per team** — Teams share a topic channel in a supergroup
 - **Primary + Secondary agents** — Primary owns the topic; secondary responds when mentioned or triggered
 - **Shared context via files** — Agents coordinate through shared markdown files, not APIs
 - **Structured escalation** — Clear rules for when to escalate up the chain
+
+### Important Telegram Routing Caveat
+
+In native topic routing, `agentId` controls the **internal OpenClaw agent** that handles the message — workspace, memory, tools, prompt, model, session.
+
+It does **not** control the **visible Telegram bot identity**.
+
+So this:
+
+```json5
+"13": { agentId: "connor" }
+```
+
+means Topic 13 is handled by the `connor` agent internally, but replies still come from whichever Telegram account is attached to that group/topic (often the default/orchestrator bot).
+
+Use this rule of thumb:
+
+- **Want one visible bot with many internal specialist brains?** Use native topic routing.
+- **Want Connor to look like Connor and Kara to look like Kara?** Use multi-bot routing.
 
 ---
 
