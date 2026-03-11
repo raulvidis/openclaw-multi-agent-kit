@@ -18,17 +18,21 @@ If you are using **forum topics inside a Telegram direct chat** instead of a sup
 4. Enable Topics (Settings > Topics > Enable)
 5. Note the group ID (use a bot like @raw_data_bot or check OpenClaw logs)
 
-## Step 2: Create Topics
+## Step 2: Design Topic Architecture (before creating topics)
 
-Create a topic for each team:
-- **General** (topic 1, auto-created) — Orchestrator
-- **Build** — Coding + QA + DevOps
-- **Research** — Market Research + Growth Analytics
-- **Social** — Content + Community
-- **Leads** — Lead Generation
-- **Ops** — Email, Calendar, Data
+Use workflow-lane structure (not one-topic-per-agent):
 
-Note each topic ID.
+- **General** (topic 1, auto-created) — Orchestrator + approvals
+- **Build** — Coding + QA + DevOps handoffs
+- **Research** — Market intel + synthesis
+- **Growth** — Content + paid experiments
+- **Leads** — Sourcing + enrichment + qualification
+- **Ops** — Email, calendar, admin workflows
+- **Incidents** (optional) — urgent production/debug alerts
+
+Then create the topics in Telegram and note each topic ID.
+
+Deep-dive architecture guide: [telegram-channel-architecture.md](telegram-channel-architecture.md)
 
 ## Step 3: Create Bots
 
@@ -110,10 +114,14 @@ So if your default/orchestrator bot is the one in the group, replies may still v
 
 1. Restart OpenClaw: `openclaw restart`
 2. Send a message in each topic
-3. Verify the correct routing behavior:
+3. Verify routing invariants:
+   - Exactly **one** primary responder (`requireMention: false`) per topic
+   - All secondary agents in that topic are `requireMention: true`
+   - Cross-topic mentions do not hijack unrelated lanes
+4. Verify delivery behavior:
    - **Multi-bot:** the correct specialist bot should visibly respond
-   - **Native topic routing:** the correct internal agent should answer, but the visible sender may still be the shared/default bot
-4. Test `sessions_send` between agents using the structured format in `docs/inter-agent-handoff-standard.md`
+   - **Native topic routing:** correct internal agent handles the message, visible sender may still be shared/default bot
+5. Test `sessions_send` handoffs using the format in `docs/inter-agent-handoff-standard.md` and verify ACK/DONE/BLOCKED lifecycle
 
 ## Troubleshooting
 
