@@ -1,0 +1,19 @@
+{
+  "name": "openclaw-agent-server",
+  "version": "1.0.0",
+  "description": "Self-hosted OpenClaw multi-agent Telegram bot server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "telegraf": "^4.16.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
